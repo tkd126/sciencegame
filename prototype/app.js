@@ -468,7 +468,7 @@ function init() {
 
 function bindEvents() {
   $('#btnNewGame').addEventListener('click', () => $('#newGameDialog').showModal());
-  $('#btnChapters').addEventListener('click', () => $('#chapterDialog').showModal());
+  $('#btnChapters').addEventListener('click', () => window.ChapterAccess.request(() => $('#chapterDialog').showModal()));
   document.querySelectorAll('[data-close-title]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
   $('#btnChapter2Preview').addEventListener('click',()=>window.ChapterAccess.request(()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';showStory();renderScene($('#previewChapter2').value);}));
   $('#btnRoomPreview').addEventListener('click',()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';state.flags.oilSeparated=true;state.flags.saltSeparated=true;showStory();renderScene($('#previewSection').value);});

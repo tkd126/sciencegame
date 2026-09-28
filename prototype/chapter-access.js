@@ -10,7 +10,7 @@
     const dialog = document.createElement('dialog');
     dialog.className = 'title-dialog';
     dialog.setAttribute('aria-labelledby', 'chapterLockTitle');
-    dialog.innerHTML = '<form><h2 id="chapterLockTitle">2편은 다음 수업에 만나요</h2><p>지금은 1편을 플레이할 수 있어요.<br>2편을 열려면 선생님이 알려 주신 비밀번호를 입력하세요.</p><label for="chapterPassword">2편 비밀번호</label><input id="chapterPassword" type="password" inputmode="numeric" maxlength="4" autocomplete="off" required><p role="status" aria-live="polite"></p><button type="submit">2편 열기</button><button type="button" data-cancel>돌아가기</button></form>';
+    dialog.innerHTML = '<form><h2 id="chapterLockTitle">선생님 확인이 필요해요</h2><p>장 선택과 2편은 비밀번호로 열 수 있어요.<br>1편은 새로 시작 또는 이어하기로 플레이하세요.</p><label for="chapterPassword">비밀번호</label><input id="chapterPassword" type="password" inputmode="numeric" maxlength="4" autocomplete="off" required><p role="status" aria-live="polite"></p><button type="submit">확인</button><button type="button" data-cancel>돌아가기</button></form>';
     document.body.appendChild(dialog);
     const field = dialog.querySelector('input');
     dialog.addEventListener('close', () => { pending = false; dialog.remove(); }, {once:true});
