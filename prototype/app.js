@@ -470,7 +470,7 @@ function bindEvents() {
   $('#btnNewGame').addEventListener('click', () => $('#newGameDialog').showModal());
   $('#btnChapters').addEventListener('click', () => $('#chapterDialog').showModal());
   document.querySelectorAll('[data-close-title]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
-  $('#btnChapter2Preview').addEventListener('click',()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';showStory();renderScene($('#previewChapter2').value);});
+  $('#btnChapter2Preview').addEventListener('click',()=>window.ChapterAccess.request(()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';showStory();renderScene($('#previewChapter2').value);}));
   $('#btnRoomPreview').addEventListener('click',()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';state.flags.oilSeparated=true;state.flags.saltSeparated=true;showStory();renderScene($('#previewSection').value);});
   dom.btnStart.addEventListener("click", startNew);
   dom.btnContinue.addEventListener("click", continueGame);
@@ -487,8 +487,8 @@ function bindEvents() {
   $("#btnReplay").addEventListener("click", resetGame);
   $("#btnChapter1").addEventListener("click", () => {
     const next=state.scene==='chapter1-preview-end'||state.scene==='chapter2-end'?'chapter2-start':'chapter1-start';
-    if(next==='chapter2-start')state.flags=window.Chapter2.restartFlags(state.flags);
-    showStory();renderScene(next);
+    const enter=()=>{if(next==='chapter2-start')state.flags=window.Chapter2.restartFlags(state.flags);showStory();renderScene(next);};
+    if(next==='chapter2-start')window.ChapterAccess.request(enter);else enter();
   });
   dom.playerName.addEventListener("keydown", (event) => {
     if (event.key === "Enter") startNew();
@@ -510,14 +510,13 @@ function startNew() {
 }
 
 function continueGame() {
-  previewSession = false;
-  initAudio();
   const saved = loadSave();
   if (!saved) return startNew();
-  state = saved;
-  showStory();
-  renderScene(state.scene || "storage-1");
-  toast("저장된 장면에서 이어갑니다.");
+  const enter=()=>{
+    previewSession=false;initAudio();state=saved;showStory();
+    renderScene(state.scene || "storage-1");toast("저장된 장면에서 이어갑니다.");
+  };
+  if(window.ChapterAccess.isLockedScene(saved.scene))window.ChapterAccess.request(enter);else enter();
 }
 
 function showStory() {
@@ -529,6 +528,7 @@ function showStory() {
 }
 
 function renderScene(id) {
+  if(window.ChapterAccess.isLockedScene(id)&&!window.ChapterAccess.unlocked){window.ChapterAccess.request(()=>renderScene(id));return;}
   if(window.Chapter2V3View && (id==='chapter2-start'||id.startsWith('c2-'))){
     if(disposeExperiment){disposeExperiment();disposeExperiment=null;}
     if(id==='chapter2-start')delete state.flags['chapter2-v3'];

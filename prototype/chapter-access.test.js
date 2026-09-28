@@ -1,0 +1,12 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const access = require('./chapter-access');
+for (const id of ['chapter2-start', 'chapter2-end', 'c2-v3', 'c2-preview-prep', 'c2-search']) assert.equal(access.isLockedScene(id), true);
+for (const id of ['storage-1', 'chapter1-start', 'chapter1-preview-end', 'end', undefined]) assert.equal(access.isLockedScene(id), false);
+assert.equal(access.accepts('0715'), true);
+for (const value of ['715', '', '0000', null]) assert.equal(access.accepts(value), false);
+const app = fs.readFileSync(__dirname + '/app.js', 'utf8');
+assert.match(app, /function renderScene\(id\)\s*\{\s*if\(window\.ChapterAccess/);
+assert.match(app, /ChapterAccess\.request\(enter\)/);
+assert.match(fs.readFileSync(__dirname + '/index.html', 'utf8'), /chapter-access\.js/);
+console.log('2편 비밀번호 및 진입 경로 검사 통과');
