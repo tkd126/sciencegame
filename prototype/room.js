@@ -28,7 +28,7 @@
   if(a==='door'&&s.unlocked)s.complete=true;
   return s;
  }
- const spots=[['window','창문',0,2,23,57],['tray','창가의 재료 접시',2,60,21,12],['drawer','책상 서랍',27,58,25,9],['tv','텔레비전과 비디오',30,28,24,28],['board','벽의 방송 원고',54,19,23,32],['equipment','선반의 장비 상자',57,65,23,15],['door','방송실 문',86,10,13,82]];
+ const spots=[['window','창문',0,2,23,57],['tray','창가의 재료 접시',2,60,21,12],['drawer','책상 서랍',27,58,25,9],['tv','텔레비전과 비디오',30,28,24,28],['board','벽의 방송 원고',54,19,23,32],['equipment','선반의 장비 상자',57,65,10,15],['door','방송실 문',86,10,13,82]];
  function mount(host,mode,onComplete,saved,onSave=()=>{}){
   let s=restore(mode,saved),speaker='소미',line=mode==='supplies'?'하나가 쓰던 도구를 찾자. 창가 접시 안에서 금속이 반짝여. 물건을 직접 눌러 봐.':'밖에서는 우리 목소리가 안 들리나 봐. 방송을 연결해서 선생님께 알려야겠어. 책상과 장비부터 살펴보자.',detail='',finished=false,peek=false;
   let bagOpen=false;
