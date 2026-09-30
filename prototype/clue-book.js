@@ -12,7 +12,7 @@
    seen.add(page);
    host.innerHTML='<div class="clue-book"><span class="mission-kicker">교실 · 사라진 8번</span><h2>사진에 없는 촬영자</h2><nav>'+Object.entries(pages).map(([id,p])=>'<button data-page="'+id+'" aria-pressed="'+(page===id)+'">'+p[0]+(seen.has(id)?' ✓':'')+'</button>').join('')+'</nav><article class="clue-paper">'+pages[page][1]+'</article><p role="status">'+reply+'</p>'+(solved?'<button data-finish class="primary-btn">은호에게 이름을 확인한다</button>':'<form><label for="missingName">8번 칸에서 사라진 이름은?</label><input id="missingName" autocomplete="off" maxlength="20"><button type="submit">기록을 맞춰 보기</button></form>')+'</div>';
    host.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>{page=b.dataset.page;render();});
-   const form=host.querySelector('form');if(form)form.onsubmit=e=>{e.preventDefault();const answer=host.querySelector('input').value;if(check('roster',[...seen],answer)){solved=true;reply='소미: 민수는 조명, 은호는 그림. 남은 촬영자이자 8번은 윤하나. 이름을 찾았어. 그런데 은호는 왜 아무 말도 없지?';}else reply=seen.size<3?'소미: 아직 확인하지 않은 종이가 있어. 추측만으로 이름을 적어도 될까?':'소미: 사진의 번호를 출석부와 맞추고, 그 친구의 방송 짝을 당번표에서 찾아보자.';render();};
+   const form=host.querySelector('form');if(form)form.onsubmit=e=>{e.preventDefault();const answer=host.querySelector('input').value;if(check('roster',[...seen],answer)){solved=true;reply='소미: 민수는 조명, 은호는 그림. 남은 촬영자이자 8번은 윤하나. 이름을 찾았어. 그런데 은호는 왜 아무 말도 없지?';}else reply=seen.size<3?'소미: 아직 확인하지 않은 종이가 있어. 추측만으로 이름을 적어도 될까?':'소미: 수진과 민수가 맡은 일부터 생각해 보자. 사진 속 두 사람의 번호도 맞추면, 남은 역할이 누구의 일인지 알 수 있겠어.';render();};
    const finish=host.querySelector('[data-finish]');if(finish)finish.onclick=onComplete;
   }
   render();return ()=>{};
