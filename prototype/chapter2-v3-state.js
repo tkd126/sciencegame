@@ -4,7 +4,7 @@
  const active=typeof module!=='undefined'?require('./chapter2-active'):root.Chapter2Active;
  const investigation=typeof module!=='undefined'?require('./chapter2-investigation'):root.Chapter2Investigation;
  const line=(speaker,text)=>({speaker,text});
- const intro=[line('소미','촬영 메모에는 골대 옆이라고 돼 있어. 하나야, 거기 있어?'),line('태오','……방금 “여기”라고 한 거야? 너희도 들었지?'),line('소미','응. 대답이 들리긴 했는데…… 골대 뒤가 잘 안 보여.'),line('강은호','저 벤치, 촬영 장비를 놓던 자리야. 남겨 둔 게 있는지 보자.')];
+ const intro=[line('소미','선생님과 운동장까지 왔어. 방송실에서 찾은 촬영 메모에는 골대 옆이라고 돼 있었지? 하나야, 거기 있어?'),line('태오','……방금 “여기”라고 한 거야? 너희도 들었지?'),line('소미','응. 대답이 들리긴 했는데…… 골대 뒤가 잘 안 보여.'),line('강은호','저 벤치, 촬영 장비를 놓던 자리야. 남겨 둔 게 있는지 보자.')];
  function initial(saved){
   const fresh={version:3,revision:1,room:'yard',seen:{},answers:{},inventory:[],selected:'',dialogue:intro,question:'',after:'',complete:false};
   if(!saved||saved.version!==3)return fresh;
@@ -155,7 +155,7 @@
   const s=reduce(previous,a);
   s.notebook=Array.isArray(s.notebook)?s.notebook:[];
   const add=(id,text,lines)=>{if(s.notebook.some(n=>n.id===id))return;s.notebook.push({id,text});s.dialogue.push(...lines.map(([speaker,text])=>line(speaker,text)));};
-  if(s.seen.camera||s.room!=='yard')add('found','표지에도 이름이 없다. 첫 장에는 작은 글씨로 “하나”만 적혀 있다.',s.room==='yard'?[['태오','카메라 밑에 수첩도 끼어 있어. 빨간 끈이 달렸네.'],['소미','이름은 없는데…… 첫 장에 “하나”라고 적혀 있어. 나머지는 비었어.'],['강은호','하나 거라면 돌려줘야지. 같이 챙겨 가자.']]:[]);
+  if(s.seen.camera||s.room!=='yard')add('found','표지는 비어 있다. 첫 장에는 작은 글씨로 “하나”만 적혀 있다.',s.room==='yard'?[['태오','카메라 밑에 수첩도 끼어 있어. 빨간 끈이 달렸네.'],['소미','표지는 비어 있는데…… 첫 장에 “하나”라고 적혀 있어. 뒤쪽은 아직 아무것도 안 쓰여 있어.'],['강은호','하나 거라면 돌려줘야지. 같이 챙겨 가자.']]:[]);
   if(s.seen.recordingHeard)add('photo','어제 사진에는 내가 있어.',[['소미','잠깐. 수첩에 글씨가 생겼어. 아까 분명 비어 있었는데.'],['태오','“어제 사진에는 내가 있어.” ……하나가 남긴 말일까?']]);
   if(s.room==='weather'&&previous.room==='archive')add('room','사진 속 창가. 내가 마지막으로 기다린 곳.',[['소미','수첩에 또 한 줄이 있어. “사진 속 창가. 내가 마지막으로 기다린 곳.”'],['강은호','사진 뒷면에도 관측실이라고 적혀 있었지. 하나가 여기서 누굴 기다렸던 걸까?']]);
   if(s.answers.gradient&&!previous.answers?.gradient)add('voice','내 목소리는 영상이 끝난 뒤에 남아 있어.',[['소미','수첩 봐. “내 목소리는 영상이 끝난 뒤에 남아 있어.” 아까는 없던 문장이야.'],['태오','촬영본이 있는 편집실에서 끝까지 들어 보자. 하나가 어디 있는지 알려 줄지도 몰라.']]);

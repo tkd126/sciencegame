@@ -447,7 +447,7 @@ const scenes = {
   "room-calm": {label:"1999년 · 방송실",time:"오전 11:29",mode:"past",chars:["somi","eunho"],active:"somi",speaker:"소미",line:"선생님! …안 들리시나 봐. 뛰어내리거나 문을 부수면 안 돼. 여기는 방송실이잖아. 방송을 연결해서 교무실에 알리자.",next:"room-finale"},
   "room-finale": {label:"방송실 · 마지막 방송",time:"오전 11:30",mode:"past",chars:[],speaker:"소미",line:"방 안을 살펴서 방송을 연결하자.",experiment:"room",roomMode:"finale",next:"room-outside"},
   "room-outside": {label:"1999년 · 다시 열린 복도",time:"오전 11:40",mode:"past",chars:["teacher","taeo"],active:"teacher",speaker:"1999년 담임",line:"다친 데는 없니? 문 잠금장치를 수리해야겠구나. 그런데… 방금 방송에서 하나 목소리가 들리지 않았니?",next:"room-recognized"},
-  "room-recognized": {label:"1999년 · 이름을 기억하는 사람",time:"오전 11:41",mode:"past",chars:["eunho","somi"],active:"eunho",speaker:"강은호",line:"선생님도 하나를 기억하세요? 아까는 아무도 몰랐는데. 종이에 쓰고, 목소리로 들으면 잠깐이라도 기억할 수 있나 봐.",next:"room-promise"},
+  "room-recognized": {label:"1999년 · 이름을 기억하는 사람",time:"오전 11:41",mode:"past",chars:["eunho","somi"],active:"eunho",speaker:"강은호",line:"선생님, 저도 이제 하나 목소리가 기억나요. 아까는 같이 만든 그림을 봐도 잘 생각나지 않았는데… 이름을 적고 녹음을 들으니까 조금씩 떠올라요.",next:"room-promise"},
   "room-promise": {label:"1999년 · 오늘의 약속",time:"오전 11:42",mode:"past",chars:["taeo","somi"],active:"taeo",speaker:"태오",line: "운동장 골대 옆이랬지? 내가 선생님께 같이 가 달라고 할게. 소미는 이름 적은 종이 챙겨. 이제 놓치지 말자.",next:"chapter1-end"},
   "chapter1-end": {
     label: "1편 · 이름을 남긴 아이들",time:"오전 11:45", mode: "past", chars: ["eunho", "taeo", "somi"], active: "eunho", speaker: "강은호",
