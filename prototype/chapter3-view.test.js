@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict'),fs=require('node:fs');
+assert.ok(fs.existsSync(__dirname+'/chapter3-view.js'),'chapter3 view/controller exists');
+const V=require('./chapter3-view'),R=require('./chapter3-state');
+let queued=[],updates=[],done=0;
+const clock={set:f=>{queued.push(f);return queued.length;},clear:()=>{}};
+let c=V.controller('measure',undefined,s=>updates.push(s),()=>done++,clock);
+c.send('set','depth',50);c.send('run');c.send('run');assert.equal(queued.length,1);
+c.dispose();queued[0]();assert.equal(updates.at(-1).step,'running');assert.equal(done,0);
+c=V.controller('measure',undefined,s=>updates.push(s),()=>done++,clock);
+c.send('set','depth',50);c.send('run');queued.at(-1)();assert.equal(c.state.step,'result');
+c.send('set','high',28);c.send('set','level',32);c.send('set','low',36);c.send('set','eye','level');c.send('check');c.send('check');assert.equal(done,1);
+assert.equal(c.state.done.measure,true);
+const restored=R.initial(JSON.parse(JSON.stringify(c.state)));assert.equal(restored.done.measure,true);
+console.log('chapter3 controller: double execution, disposal, completion once, restore PASS');

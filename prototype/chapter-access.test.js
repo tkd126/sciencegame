@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const access = require('./chapter-access');
+for (const id of ['chapter3-start','chapter3-end','c3-studio']) assert.equal(access.isLockedScene(id),true);
 for (const id of ['chapter2-start', 'chapter2-end', 'c2-v3', 'c2-preview-prep', 'c2-search']) assert.equal(access.isLockedScene(id), true);
 for (const id of ['storage-1', 'chapter1-start', 'chapter1-preview-end', 'end', undefined]) assert.equal(access.isLockedScene(id), false);
 assert.equal(access.accepts('0715'), true);

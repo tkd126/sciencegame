@@ -456,6 +456,7 @@ const scenes = {
 };
 
 if (typeof window !== 'undefined' && window.Chapter2) Object.assign(scenes, window.Chapter2.build());
+if (typeof window !== 'undefined' && window.Chapter3Story) Object.assign(scenes, window.Chapter3Story.build());
 
 function init() {
   const saved = loadSave();
@@ -471,6 +472,7 @@ function bindEvents() {
   $('#btnChapters').addEventListener('click', () => window.ChapterAccess.request(() => $('#chapterDialog').showModal()));
   document.querySelectorAll('[data-close-title]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
   $('#btnChapter2Preview').addEventListener('click',()=>window.ChapterAccess.request(()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';showStory();renderScene($('#previewChapter2').value);}));
+  $('#btnChapter3Preview').addEventListener('click',()=>window.ChapterAccess.request(()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';const section=$('#previewChapter3').value;state.flags.chapter3=window.Chapter3State.preview(section);showStory();renderScene(window.Chapter3Story.previewScenes[section]);}));
   $('#btnRoomPreview').addEventListener('click',()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';state.flags.oilSeparated=true;state.flags.saltSeparated=true;showStory();renderScene($('#previewSection').value);});
   dom.btnStart.addEventListener("click", startNew);
   dom.btnContinue.addEventListener("click", continueGame);
@@ -486,7 +488,7 @@ function bindEvents() {
   $("#btnReset").addEventListener("click", resetGame);
   $("#btnReplay").addEventListener("click", resetGame);
   $("#btnChapter1").addEventListener("click", () => {
-    const next=state.scene==='chapter1-preview-end'||state.scene==='chapter2-end'?'chapter2-start':'chapter1-start';
+    const next=['chapter2-end','chapter3-end'].includes(state.scene)?'chapter3-start':state.scene==='chapter1-preview-end'?'chapter2-start':'chapter1-start';
     const enter=()=>{if(next==='chapter2-start')state.flags=window.Chapter2.restartFlags(state.flags);showStory();renderScene(next);};
     if(next==='chapter2-start')window.ChapterAccess.request(enter);else enter();
   });
@@ -553,7 +555,9 @@ function renderScene(id) {
   dom.dialogue.classList.remove("hidden");
   pendingNext = null;
   pendingReply = null;
-  if (id === "end" || id === "chapter1-preview-end" || id === "chapter2-end") return showEnding(id);
+  dom.background.style.backgroundImage='';
+  document.body.classList.toggle('chapter3-mode', /^(chapter3-|c3-)/.test(id));
+  if (id === "end" || id === "chapter1-preview-end" || id === "chapter2-end" || id === 'chapter3-end') return showEnding(id);
   const scene = scenes[id];
   if (!scene) return;
   state.scene = id;
@@ -562,6 +566,15 @@ function renderScene(id) {
   saveGame();
 
   dom.background.className = `background ${scene.mode || "past"}`;
+  if(scene.chapter3Room){
+    const room=window.Chapter3Story.rooms[scene.chapter3Room];
+    dom.background.style.backgroundImage=`url("${scene.chapter3Open&&room.openArt?room.openArt:room.art}")`;
+    dom.background.classList.add('c3-background');
+    let progress=window.Chapter3State.initial(state.flags.chapter3);
+    if(scene.chapter3Take)progress=window.Chapter3State.act(progress,{type:'take',target:scene.chapter3Take});
+    if(scene.chapter3Note)progress=window.Chapter3State.act(progress,{type:'note',target:scene.chapter3Note});
+    state.flags.chapter3=progress;saveGame();
+  }
   if(scene.backdrop==='field')dom.background.classList.add('weather-field');
   if(scene.backdrop==='night')dom.background.classList.add('weather-night');
   if(['photoStudio','staffroom','hall'].includes(scene.backdrop))dom.background.classList.add('c2-'+scene.backdrop);
@@ -579,6 +592,12 @@ function renderScene(id) {
   clearChoices();
   setDialogue(scene.speaker || "", resolve(scene.line), scene.dialogueType || "speech");
   dom.dialogue.disabled = Boolean(scene.choices);
+  if(scene.experiment==='chapter3'){
+    if(state.flags.chapter3?.done[scene.activity]){renderScene(scene.next);return;}
+    dom.dialogue.classList.add('hidden');
+    const panel=$('#experimentPanel');panel.classList.remove('hidden');panel.setAttribute('aria-label','3편 · 열의 이동 조사');
+    disposeExperiment=window.Chapter3View.mount(panel,scene.activity,()=>renderScene(scene.next),state.flags.chapter3,progress=>{state.flags.chapter3=progress;saveGame();},playFoley);
+  }
   if(scene.experiment==='hana-search'){
     dom.dialogue.classList.add('hidden');
     const panel=$('#experimentPanel');panel.classList.remove('hidden');panel.setAttribute('aria-label','하나를 찾아 운동장 조사');
@@ -801,8 +820,17 @@ function showEnding(id = "end") {
     $('#endingMessage').textContent='찾으러 와 줘서 고마워. 그런데 지금 뒤돌아보지는 마.';
     dom.endingSummary.textContent='운동장에서 주운 수첩에 없던 글씨가 생기기 시작했다. 어제 사진과 뒷면의 메모를 따라 관측실까지 온 아이들은 촬영 기록을 대조해 하나의 목소리가 남은 영상을 찾았다. 재생을 멈춘 빈 교실 화면에서 의자가 움직였다. 수첩에는 새로운 문장이 남았다. “찾으러 와 줘서 고마워. 그런데 지금 뒤돌아보지는 마.”';
     dom.endingBadges.textContent='두 번째 단서 · 녹음과 사진에 남은 시간의 어긋남';
-    $('#btnChapter1').textContent='2편 다시 살펴보기';
-    $('#endingNote').textContent='다음 이야기: 밤의 학교 방송 · 3편은 아직 제작 중';
+    $('#btnChapter1').textContent='3편 · 두 번 들린 대답';
+    $('#endingNote').textContent='다음 이야기: 빈자리에 남은 온도 · 열과 우리 생활';
+  }
+  if(id==='chapter3-end'){
+    $('#endingKicker').textContent='3편 · 두 번 들린 대답';
+    $('#endingTitle').textContent='내 이름에 대답하지 마';
+    $('#endingMessage').textContent='녹음은 끝났는데, 문밖에서 같은 목소리가 들렸다.';
+    dom.endingSummary.textContent='컵의 온도와 움직인 종이, 따뜻한 빈자리의 이유는 직접 확인했다. 하지만 수첩에 새로 생긴 글씨와 우리의 이름을 부르는 목소리는 설명할 수 없었다. 하나는 아직 만나지 못했다.';
+    dom.endingBadges.textContent='세 번째 단서 · 직접 관찰한 사실과 아직 확인하지 못한 기록';
+    $('#btnChapter1').textContent='3편 다시 살펴보기';
+    $('#endingNote').textContent='친구의 얼굴을 확인하기 전에는 대답하지 않기로 했다.';
   }
   playFoley('paper');
 }

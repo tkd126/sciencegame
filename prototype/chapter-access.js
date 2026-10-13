@@ -1,6 +1,6 @@
 // Classroom pacing lock, not a security boundary. Never persist the unlock.
 (function(root) {
-  const isLockedScene = id => typeof id === 'string' && (id.startsWith('chapter2-') || id.startsWith('c2-'));
+  const isLockedScene = id => typeof id === 'string' && /^(chapter[23]-|c[23]-)/.test(id);
   const accepts = value => value === '0715';
   let unlocked = false, pending = false;
   function request(enter) {
